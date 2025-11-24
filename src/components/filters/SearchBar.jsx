@@ -1,0 +1,43 @@
+import { useState } from 'react'
+import { MagnifyingGlassIcon, XMarkIcon } from '@heroicons/react/24/outline'
+
+function SearchBar({ onSearch, placeholder = 'Buscar productos...' }) {
+  const [searchTerm, setSearchTerm] = useState('')
+
+  const handleChange = (e) => {
+    const value = e.target.value
+    setSearchTerm(value)
+    onSearch(value)
+  }
+
+  const handleClear = () => {
+    setSearchTerm('')
+    onSearch('')
+  }
+
+  return (
+    <div className="relative w-full">
+      <div className="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
+        <MagnifyingGlassIcon className="h-5 w-5 text-neutral-400" />
+      </div>
+      <input
+        type="text"
+        value={searchTerm}
+        onChange={handleChange}
+        placeholder={placeholder}
+        className="input pl-12 pr-10 w-full"
+      />
+      {searchTerm && (
+        <button
+          onClick={handleClear}
+          className="absolute inset-y-0 right-0 pr-4 flex items-center text-neutral-400 hover:text-neutral-600 transition-colors"
+        >
+          <XMarkIcon className="h-5 w-5" />
+        </button>
+      )}
+    </div>
+  )
+}
+
+export default SearchBar
+
