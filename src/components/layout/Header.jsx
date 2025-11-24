@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { ShoppingBagIcon } from '@heroicons/react/24/outline'
 import Navbar from './Navbar'
+import CartIcon from '../cart/CartIcon'
 
 function Header() {
   return (
@@ -19,12 +20,7 @@ function Header() {
             <Link to="/products" className="text-neutral-700 hover:text-primary-600 transition-colors font-medium">
               Productos
             </Link>
-            <Link to="/cart" className="relative text-neutral-700 hover:text-primary-600 transition-colors">
-              <ShoppingBagIcon className="w-6 h-6" />
-              <span className="absolute -top-2 -right-2 bg-primary-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
-                0
-              </span>
-            </Link>
+            <CartIcon />
           </nav>
           
           <div className="md:hidden">

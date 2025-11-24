@@ -1,6 +1,7 @@
 import { Link, useLocation } from 'react-router-dom'
 import { useState } from 'react'
 import { XMarkIcon, Bars3Icon } from '@heroicons/react/24/outline'
+import CartIcon from '../cart/CartIcon'
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
@@ -53,17 +54,22 @@ function Navbar() {
                     {link.label}
                   </Link>
                 ))}
-                <Link
-                  to="/cart"
-                  onClick={() => setIsOpen(false)}
-                  className={`block py-2 px-4 rounded-lg transition-colors ${
-                    isActive('/cart')
-                      ? 'bg-primary-100 text-primary-700 font-medium'
-                      : 'text-neutral-700 hover:bg-neutral-100'
-                  }`}
-                >
-                  Carrito
-                </Link>
+                <div className="flex items-center justify-between py-2 px-4">
+                  <Link
+                    to="/cart"
+                    onClick={() => setIsOpen(false)}
+                    className={`flex-grow transition-colors ${
+                      isActive('/cart')
+                        ? 'bg-primary-100 text-primary-700 font-medium rounded-lg py-2 px-4 -mx-4'
+                        : 'text-neutral-700 hover:bg-neutral-100 rounded-lg py-2 px-4 -mx-4'
+                    }`}
+                  >
+                    Carrito
+                  </Link>
+                  <div onClick={() => setIsOpen(false)}>
+                    <CartIcon />
+                  </div>
+                </div>
               </nav>
             </div>
           </div>
