@@ -52,6 +52,9 @@ out/
 *.min.css
 *.bundle.js
 
+# Vite
+.vite/
+
 # Testing
 coverage/
 .nyc_output/
