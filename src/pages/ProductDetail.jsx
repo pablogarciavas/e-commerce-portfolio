@@ -1,5 +1,6 @@
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import { useProducts } from '../context/ProductContext'
+import { useCart } from '../context/CartContext'
 import { formatPrice } from '../utils/formatters'
 import { StarIcon } from '@heroicons/react/24/solid'
 import { StarIcon as StarOutlineIcon } from '@heroicons/react/24/outline'
@@ -12,8 +13,17 @@ function ProductDetail() {
   const { id } = useParams()
   const navigate = useNavigate()
   const { getProductById, loading } = useProducts()
+  const { addToCart, isInCart, getItemQuantity } = useCart()
   
   const product = getProductById(id)
+  const inCart = product ? isInCart(product.id) : false
+  const quantityInCart = product ? getItemQuantity(product.id) : 0
+
+  const handleAddToCart = () => {
+    if (product) {
+      addToCart(product, 1)
+    }
+  }
 
   if (loading) {
     return (
@@ -147,26 +157,30 @@ function ProductDetail() {
           </Card>
 
           <div className="mt-auto space-y-4">
+            {inCart ? (
+              <div className="bg-green-50 border-2 border-green-200 rounded-lg p-4 mb-4">
+                <p className="text-green-700 font-medium text-center">
+                  ✓ {quantityInCart} {quantityInCart === 1 ? 'unidad' : 'unidades'} en el carrito
+                </p>
+              </div>
+            ) : null}
+            
             <Button
               variant="primary"
               size="lg"
               fullWidth
-              onClick={() => {
-                console.log('Agregar al carrito:', product.id)
-              }}
+              onClick={handleAddToCart}
             >
-              Agregar al carrito
+              {inCart ? 'Agregar otra unidad' : 'Agregar al carrito'}
             </Button>
             
             <Button
               variant="outline"
               size="lg"
               fullWidth
-              onClick={() => {
-                console.log('Agregar a favoritos:', product.id)
-              }}
+              onClick={() => navigate('/cart')}
             >
-              Agregar a favoritos
+              Ver carrito
             </Button>
           </div>
         </div>

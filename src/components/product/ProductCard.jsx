@@ -1,10 +1,20 @@
 import { Link } from 'react-router-dom'
+import { useCart } from '../../context/CartContext'
 import Card from '../common/Card'
 import { formatPrice } from '../../utils/formatters'
 import { StarIcon } from '@heroicons/react/24/solid'
 import { StarIcon as StarOutlineIcon } from '@heroicons/react/24/outline'
+import { ShoppingCartIcon } from '@heroicons/react/24/outline'
 
 function ProductCard({ product }) {
+  const { addToCart, isInCart } = useCart()
+  const inCart = isInCart(product.id)
+
+  const handleAddToCart = (e) => {
+    e.preventDefault()
+    e.stopPropagation()
+    addToCart(product, 1)
+  }
   const renderStars = (rating) => {
     const stars = []
     const fullStars = Math.floor(rating)
@@ -33,8 +43,8 @@ function ProductCard({ product }) {
   }
 
   return (
-    <Link to={`/product/${product.id}`}>
-      <Card className="h-full flex flex-col group cursor-pointer">
+    <Card className="h-full flex flex-col group cursor-pointer relative">
+      <Link to={`/product/${product.id}`} className="flex-grow flex flex-col">
         <div className="aspect-square w-full overflow-hidden rounded-lg bg-neutral-100 mb-4">
           <img
             src={product.image}
@@ -66,8 +76,20 @@ function ProductCard({ product }) {
             )}
           </div>
         </div>
-      </Card>
-    </Link>
+      </Link>
+      
+      <button
+        onClick={handleAddToCart}
+        className={`mt-4 w-full py-2 px-4 rounded-lg font-medium transition-all duration-200 flex items-center justify-center gap-2 ${
+          inCart
+            ? 'bg-green-100 text-green-700 hover:bg-green-200'
+            : 'bg-primary-600 text-white hover:bg-primary-700'
+        }`}
+      >
+        <ShoppingCartIcon className="w-5 h-5" />
+        {inCart ? 'En el carrito' : 'Agregar al carrito'}
+      </button>
+    </Card>
   )
 }
 
