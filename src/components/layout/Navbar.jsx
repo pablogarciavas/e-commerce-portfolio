@@ -1,11 +1,15 @@
-import { Link, useLocation } from 'react-router-dom'
+import { Link, useLocation, useNavigate } from 'react-router-dom'
 import { useState } from 'react'
-import { XMarkIcon, Bars3Icon } from '@heroicons/react/24/outline'
+import { XMarkIcon, Bars3Icon, UserCircleIcon } from '@heroicons/react/24/outline'
+import { useAuth } from '../../context/AuthContext'
 import CartIcon from '../cart/CartIcon'
+import Button from '../common/Button'
 
 function Navbar() {
   const [isOpen, setIsOpen] = useState(false)
   const location = useLocation()
+  const navigate = useNavigate()
+  const { isAuthenticated, user, logout } = useAuth()
   
   const isActive = (path) => location.pathname === path
   
@@ -13,6 +17,12 @@ function Navbar() {
     { path: '/', label: 'Inicio' },
     { path: '/products', label: 'Productos' },
   ]
+
+  const handleLogout = () => {
+    logout()
+    setIsOpen(false)
+    navigate('/')
+  }
   
   return (
     <>
@@ -69,6 +79,53 @@ function Navbar() {
                   <div onClick={() => setIsOpen(false)}>
                     <CartIcon />
                   </div>
+                </div>
+
+                <div className="border-t border-neutral-200 pt-4 mt-4">
+                  {isAuthenticated ? (
+                    <>
+                      <div className="flex items-center space-x-2 py-2 px-4 mb-4">
+                        <UserCircleIcon className="w-6 h-6 text-neutral-600" />
+                        <span className="text-neutral-700 font-medium">{user?.name}</span>
+                      </div>
+                      {user?.role === 'admin' && (
+                        <Link
+                          to="/admin"
+                          onClick={() => setIsOpen(false)}
+                          className={`block py-2 px-4 rounded-lg transition-colors ${
+                            isActive('/admin')
+                              ? 'bg-primary-100 text-primary-700 font-medium'
+                              : 'text-neutral-700 hover:bg-neutral-100'
+                          }`}
+                        >
+                          Panel Admin
+                        </Link>
+                      )}
+                      <button
+                        onClick={handleLogout}
+                        className="w-full text-left py-2 px-4 rounded-lg text-neutral-700 hover:bg-neutral-100 transition-colors"
+                      >
+                        Salir
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <Link
+                        to="/login"
+                        onClick={() => setIsOpen(false)}
+                        className="block py-2 px-4 rounded-lg text-neutral-700 hover:bg-neutral-100 transition-colors mb-2"
+                      >
+                        Iniciar Sesión
+                      </Link>
+                      <Link
+                        to="/register"
+                        onClick={() => setIsOpen(false)}
+                        className="block py-2 px-4 rounded-lg bg-primary-600 text-white hover:bg-primary-700 transition-colors text-center"
+                      >
+                        Registrarse
+                      </Link>
+                    </>
+                  )}
                 </div>
               </nav>
             </div>
