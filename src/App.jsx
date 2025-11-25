@@ -10,6 +10,7 @@ import Products from './pages/Products'
 import ProductDetail from './pages/ProductDetail'
 import Cart from './pages/Cart'
 import Checkout from './pages/Checkout'
+import OrderConfirmation from './pages/OrderConfirmation'
 import Login from './pages/Login'
 import Register from './pages/Register'
 import Dashboard from './pages/Admin/Dashboard'
@@ -42,6 +43,14 @@ function App() {
                   element={
                     <ProtectedRoute>
                       <Checkout />
+                    </ProtectedRoute>
+                  }
+                />
+                <Route
+                  path="/order-confirmation/:id"
+                  element={
+                    <ProtectedRoute>
+                      <OrderConfirmation />
                     </ProtectedRoute>
                   }
                 />
