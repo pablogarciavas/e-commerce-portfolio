@@ -8,6 +8,7 @@ import { ArrowLeftIcon } from '@heroicons/react/24/outline'
 import Button from '../components/common/Button'
 import Loading from '../components/common/Loading'
 import Card from '../components/common/Card'
+import LazyImage from '../components/common/LazyImage'
 
 function ProductDetail() {
   const { id } = useParams()
@@ -112,7 +113,7 @@ function ProductDetail() {
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 lg:gap-12">
         <div className="aspect-square w-full overflow-hidden rounded-xl bg-neutral-100">
-          <img
+          <LazyImage
             src={product.image}
             alt={product.title}
             className="w-full h-full object-contain"

@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react'
+import { createContext, useContext, useState, useEffect, useMemo, useCallback } from 'react'
 import { loginUser, registerUser, logoutUser, getCurrentUser } from '../utils/auth'
 import { getFromStorage, saveToStorage } from '../utils/storage'
 
@@ -41,7 +41,7 @@ export const AuthProvider = ({ children }) => {
     setIsLoading(false)
   }, [])
 
-  const login = async (email, password) => {
+  const login = useCallback(async (email, password) => {
     try {
       const userData = loginUser(email, password)
       setUser(userData)
@@ -49,9 +49,9 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       return { success: false, error: error.message }
     }
-  }
+  }, [])
 
-  const register = async (userData) => {
+  const register = useCallback(async (userData) => {
     try {
       const newUser = registerUser(userData)
       setUser(newUser)
@@ -59,30 +59,25 @@ export const AuthProvider = ({ children }) => {
     } catch (error) {
       return { success: false, error: error.message }
     }
-  }
+  }, [])
 
-  const logout = () => {
+  const logout = useCallback(() => {
     logoutUser()
     setUser(null)
-  }
+  }, [])
 
-  const isAuthenticated = () => {
-    return user !== null
-  }
+  const isAuthenticated = useMemo(() => user !== null, [user])
+  const isAdmin = useMemo(() => user && user.role === 'admin', [user])
 
-  const isAdmin = () => {
-    return user && user.role === 'admin'
-  }
-
-  const value = {
+  const value = useMemo(() => ({
     user,
     isLoading,
     login,
     register,
     logout,
-    isAuthenticated: isAuthenticated(),
-    isAdmin: isAdmin()
-  }
+    isAuthenticated,
+    isAdmin
+  }), [user, isLoading, login, register, logout, isAuthenticated, isAdmin])
 
   return (
     <AuthContext.Provider value={value}>

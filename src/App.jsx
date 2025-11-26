@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react'
 import { BrowserRouter as Router, Routes, Route } from 'react-router-dom'
 import { ProductProvider } from './context/ProductContext'
 import { CartProvider } from './context/CartContext'
@@ -5,17 +6,19 @@ import { AuthProvider } from './context/AuthContext'
 import Layout from './components/layout/Layout'
 import ProtectedRoute from './components/ProtectedRoute'
 import AdminRoute from './components/AdminRoute'
-import Home from './pages/Home'
-import Products from './pages/Products'
-import ProductDetail from './pages/ProductDetail'
-import Cart from './pages/Cart'
-import Checkout from './pages/Checkout'
-import OrderConfirmation from './pages/OrderConfirmation'
-import Login from './pages/Login'
-import Register from './pages/Register'
-import Dashboard from './pages/Admin/Dashboard'
-import ProductManagement from './pages/Admin/ProductManagement'
-import Orders from './pages/Admin/Orders'
+import Loading from './components/common/Loading'
+
+const Home = lazy(() => import('./pages/Home.jsx'))
+const Products = lazy(() => import('./pages/Products.jsx'))
+const ProductDetail = lazy(() => import('./pages/ProductDetail.jsx'))
+const Cart = lazy(() => import('./pages/Cart.jsx'))
+const Checkout = lazy(() => import('./pages/Checkout.jsx'))
+const OrderConfirmation = lazy(() => import('./pages/OrderConfirmation.jsx'))
+const Login = lazy(() => import('./pages/Login.jsx'))
+const Register = lazy(() => import('./pages/Register.jsx'))
+const Dashboard = lazy(() => import('./pages/Admin/Dashboard.jsx'))
+const ProductManagement = lazy(() => import('./pages/Admin/ProductManagement.jsx'))
+const Orders = lazy(() => import('./pages/Admin/Orders.jsx'))
 
 function App() {
   return (
@@ -24,61 +27,63 @@ function App() {
         <CartProvider>
           <Router>
             <Layout>
-              <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/products" element={<Products />} />
-                <Route path="/product/:id" element={<ProductDetail />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
-                <Route
-                  path="/cart"
-                  element={
-                    <ProtectedRoute>
-                      <Cart />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/checkout"
-                  element={
-                    <ProtectedRoute>
-                      <Checkout />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/order-confirmation/:id"
-                  element={
-                    <ProtectedRoute>
-                      <OrderConfirmation />
-                    </ProtectedRoute>
-                  }
-                />
-                <Route
-                  path="/admin"
-                  element={
-                    <AdminRoute>
-                      <Dashboard />
-                    </AdminRoute>
-                  }
-                />
-                <Route
-                  path="/admin/products"
-                  element={
-                    <AdminRoute>
-                      <ProductManagement />
-                    </AdminRoute>
-                  }
-                />
-                <Route
-                  path="/admin/orders"
-                  element={
-                    <AdminRoute>
-                      <Orders />
-                    </AdminRoute>
-                  }
-                />
-              </Routes>
+              <Suspense fallback={<Loading fullScreen />}>
+                <Routes>
+                  <Route path="/" element={<Home />} />
+                  <Route path="/products" element={<Products />} />
+                  <Route path="/product/:id" element={<ProductDetail />} />
+                  <Route path="/login" element={<Login />} />
+                  <Route path="/register" element={<Register />} />
+                  <Route
+                    path="/cart"
+                    element={
+                      <ProtectedRoute>
+                        <Cart />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/checkout"
+                    element={
+                      <ProtectedRoute>
+                        <Checkout />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/order-confirmation/:id"
+                    element={
+                      <ProtectedRoute>
+                        <OrderConfirmation />
+                      </ProtectedRoute>
+                    }
+                  />
+                  <Route
+                    path="/admin"
+                    element={
+                      <AdminRoute>
+                        <Dashboard />
+                      </AdminRoute>
+                    }
+                  />
+                  <Route
+                    path="/admin/products"
+                    element={
+                      <AdminRoute>
+                        <ProductManagement />
+                      </AdminRoute>
+                    }
+                  />
+                  <Route
+                    path="/admin/orders"
+                    element={
+                      <AdminRoute>
+                        <Orders />
+                      </AdminRoute>
+                    }
+                  />
+                </Routes>
+              </Suspense>
             </Layout>
           </Router>
         </CartProvider>

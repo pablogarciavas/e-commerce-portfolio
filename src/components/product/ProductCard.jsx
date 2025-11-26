@@ -1,8 +1,9 @@
-import { useRef } from 'react'
+import { memo, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { gsap } from 'gsap'
 import { useCart } from '../../context/CartContext'
 import Card from '../common/Card'
+import LazyImage from '../common/LazyImage'
 import { formatPrice } from '../../utils/formatters'
 import { StarIcon } from '@heroicons/react/24/solid'
 import { StarIcon as StarOutlineIcon } from '@heroicons/react/24/outline'
@@ -63,7 +64,7 @@ function ProductCard({ product }) {
     <Card ref={cardRef} className="h-full flex flex-col group cursor-pointer relative">
       <Link to={`/product/${product.id}`} className="flex-grow flex flex-col">
         <div className="aspect-square w-full overflow-hidden rounded-lg bg-neutral-100 mb-4">
-          <img
+          <LazyImage
             src={product.image}
             alt={product.title}
             className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
@@ -111,5 +112,5 @@ function ProductCard({ product }) {
   )
 }
 
-export default ProductCard
+export default memo(ProductCard)
 

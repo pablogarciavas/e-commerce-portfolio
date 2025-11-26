@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react'
+import { createContext, useContext, useState, useEffect, useMemo } from 'react'
 import { getAllProducts, getProduct, getProductsByCategory, getCategories } from '../utils/api'
 import { saveToStorage, getFromStorage } from '../utils/storage'
 
@@ -134,7 +134,7 @@ export const ProductProvider = ({ children }) => {
     loadProducts()
   }, [])
 
-  const value = {
+  const value = useMemo(() => ({
     products,
     categories,
     loading,
@@ -145,7 +145,7 @@ export const ProductProvider = ({ children }) => {
     addProduct,
     updateProduct,
     deleteProduct
-  }
+  }), [products, categories, loading, error])
 
   return (
     <ProductContext.Provider value={value}>

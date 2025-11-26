@@ -1,6 +1,7 @@
-import { useEffect, useRef } from 'react'
+import { memo, useEffect, useRef } from 'react'
 import { gsap } from 'gsap'
 import { useCart } from '../../context/CartContext'
+import LazyImage from '../common/LazyImage'
 import { formatPrice } from '../../utils/formatters'
 import { TrashIcon, PlusIcon, MinusIcon } from '@heroicons/react/24/outline'
 
@@ -56,7 +57,7 @@ function CartItem({ item }) {
   return (
     <div ref={itemRef} className="flex items-center gap-4 p-4 bg-white rounded-lg border border-neutral-200">
       <div className="w-20 h-20 flex-shrink-0 overflow-hidden rounded-lg bg-neutral-100">
-        <img
+        <LazyImage
           src={item.image}
           alt={item.title}
           className="w-full h-full object-contain"
@@ -111,5 +112,5 @@ function CartItem({ item }) {
   )
 }
 
-export default CartItem
+export default memo(CartItem)
 

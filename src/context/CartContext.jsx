@@ -1,4 +1,4 @@
-import { createContext, useContext, useState, useEffect } from 'react'
+import { createContext, useContext, useState, useEffect, useMemo, useCallback } from 'react'
 import { saveToStorage, getFromStorage } from '../utils/storage'
 
 const CartContext = createContext()
@@ -19,69 +19,81 @@ export const CartProvider = ({ children }) => {
     setItems(savedCart)
   }, [])
 
-  const saveCart = (cartItems) => {
+  const saveCart = useCallback((cartItems) => {
     setItems(cartItems)
     saveToStorage('cart', cartItems)
-  }
+  }, [])
 
-  const addToCart = (product, quantity = 1) => {
-    const existingItemIndex = items.findIndex(item => item.id === product.id)
+  const addToCart = useCallback((product, quantity = 1) => {
+    setItems(prevItems => {
+      const existingItemIndex = prevItems.findIndex(item => item.id === product.id)
 
-    if (existingItemIndex >= 0) {
-      const updatedItems = [...items]
-      updatedItems[existingItemIndex].quantity += quantity
-      saveCart(updatedItems)
-    } else {
-      const newItem = {
-        id: product.id,
-        title: product.title,
-        price: product.price,
-        image: product.image,
-        quantity: quantity
+      if (existingItemIndex >= 0) {
+        const updatedItems = [...prevItems]
+        updatedItems[existingItemIndex].quantity += quantity
+        saveToStorage('cart', updatedItems)
+        return updatedItems
+      } else {
+        const newItem = {
+          id: product.id,
+          title: product.title,
+          price: product.price,
+          image: product.image,
+          quantity: quantity
+        }
+        const updatedItems = [...prevItems, newItem]
+        saveToStorage('cart', updatedItems)
+        return updatedItems
       }
-      saveCart([...items, newItem])
-    }
-  }
+    })
+  }, [])
 
-  const removeFromCart = (productId) => {
-    const updatedItems = items.filter(item => item.id !== productId)
-    saveCart(updatedItems)
-  }
+  const removeFromCart = useCallback((productId) => {
+    setItems(prevItems => {
+      const updatedItems = prevItems.filter(item => item.id !== productId)
+      saveToStorage('cart', updatedItems)
+      return updatedItems
+    })
+  }, [])
 
-  const updateQuantity = (productId, quantity) => {
+  const updateQuantity = useCallback((productId, quantity) => {
     if (quantity <= 0) {
       removeFromCart(productId)
       return
     }
 
-    const updatedItems = items.map(item =>
-      item.id === productId ? { ...item, quantity } : item
-    )
-    saveCart(updatedItems)
-  }
+    setItems(prevItems => {
+      const updatedItems = prevItems.map(item =>
+        item.id === productId ? { ...item, quantity } : item
+      )
+      saveToStorage('cart', updatedItems)
+      return updatedItems
+    })
+  }, [removeFromCart])
 
-  const clearCart = () => {
-    saveCart([])
-  }
+  const clearCart = useCallback(() => {
+    setItems([])
+    saveToStorage('cart', [])
+  }, [])
 
-  const getTotal = () => {
+  const getTotal = useCallback(() => {
     return items.reduce((total, item) => total + item.price * item.quantity, 0)
-  }
+  }, [items])
 
-  const getItemCount = () => {
+  const getItemCount = useCallback(() => {
     return items.reduce((count, item) => count + item.quantity, 0)
-  }
+  }, [items])
 
-  const getItemQuantity = (productId) => {
+  const getItemQuantity = useCallback((productId) => {
     const item = items.find(item => item.id === productId)
     return item ? item.quantity : 0
-  }
+  }, [items])
 
-  const isInCart = (productId) => {
+  const isInCart = useCallback((productId) => {
     return items.some(item => item.id === productId)
-  }
+  }, [items])
 
-  const value = {
+  const value = useMemo(() => ({
     items,
     addToCart,
     removeFromCart,
@@ -91,7 +103,7 @@ export const CartProvider = ({ children }) => {
     getItemCount,
     getItemQuantity,
     isInCart
-  }
+  }), [items, addToCart, removeFromCart, updateQuantity, clearCart, getTotal, getItemCount, getItemQuantity, isInCart])
 
   return (
     <CartContext.Provider value={value}>

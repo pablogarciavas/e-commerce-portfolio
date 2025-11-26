@@ -72,43 +72,43 @@ function Dashboard() {
       </div>
 
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-        <Card className="p-6">
+        <Card className="p-6 flex flex-col">
           <h2 className="text-xl font-semibold text-neutral-900 mb-4">
             Gestión de Productos
           </h2>
-          <p className="text-neutral-600 mb-6">
+          <p className="text-neutral-600 mb-6 flex-grow">
             Crea, edita y elimina productos de tu catálogo
           </p>
-          <Link to="/admin/products">
+          <Link to="/admin/products" className="mt-auto">
             <Button variant="primary" fullWidth>
               Gestionar Productos
             </Button>
           </Link>
         </Card>
 
-        <Card className="p-6">
+        <Card className="p-6 flex flex-col">
           <h2 className="text-xl font-semibold text-neutral-900 mb-4">
             Gestión de Pedidos
           </h2>
-          <p className="text-neutral-600 mb-6">
+          <p className="text-neutral-600 mb-6 flex-grow">
             Revisa y gestiona los pedidos realizados
           </p>
-          <Link to="/admin/orders">
-            <Button variant="outline" fullWidth>
+          <Link to="/admin/orders" className="mt-auto">
+            <Button variant="primary" fullWidth>
               Ver Pedidos
             </Button>
           </Link>
         </Card>
 
-        <Card className="p-6">
+        <Card className="p-6 flex flex-col">
           <h2 className="text-xl font-semibold text-neutral-900 mb-4">
             Volver a la Tienda
           </h2>
-          <p className="text-neutral-600 mb-6">
+          <p className="text-neutral-600 mb-6 flex-grow">
             Regresa a la vista de cliente
           </p>
-          <Link to="/products">
-            <Button variant="ghost" fullWidth>
+          <Link to="/products" className="mt-auto">
+            <Button variant="primary" fullWidth>
               Ver Catálogo
             </Button>
           </Link>
