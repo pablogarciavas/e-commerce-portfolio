@@ -52,16 +52,24 @@ function Modal({ isOpen, onClose, title, children, size = 'md' }) {
           ref={overlayRef}
           className="fixed inset-0 bg-black bg-opacity-50"
           onClick={onClose}
+          aria-hidden="true"
         />
-        <div ref={modalRef} className={`relative bg-white rounded-xl shadow-large ${sizes[size]} w-full`}>
+        <div 
+          ref={modalRef} 
+          className={`relative bg-white rounded-xl shadow-large ${sizes[size]} w-full`}
+          role="dialog"
+          aria-modal="true"
+          aria-labelledby={title ? "modal-title" : undefined}
+        >
           {title && (
             <div className="flex items-center justify-between p-6 border-b border-neutral-200">
-              <h3 className="text-xl font-semibold text-neutral-900">{title}</h3>
+              <h3 id="modal-title" className="text-xl font-semibold text-neutral-900">{title}</h3>
               <button
                 onClick={onClose}
                 className="text-neutral-400 hover:text-neutral-600 transition-colors"
+                aria-label="Cerrar modal"
               >
-                <XMarkIcon className="w-6 h-6" />
+                <XMarkIcon className="w-6 h-6" aria-hidden="true" />
               </button>
             </div>
           )}

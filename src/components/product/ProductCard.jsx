@@ -40,20 +40,20 @@ function ProductCard({ product }) {
     
     for (let i = 0; i < fullStars; i++) {
       stars.push(
-        <StarIcon key={i} className="w-4 h-4 text-yellow-400" />
+        <StarIcon key={i} className="w-4 h-4 text-yellow-400" aria-hidden="true" />
       )
     }
     
     if (hasHalfStar) {
       stars.push(
-        <StarIcon key="half" className="w-4 h-4 text-yellow-400" />
+        <StarIcon key="half" className="w-4 h-4 text-yellow-400" aria-hidden="true" />
       )
     }
     
     const emptyStars = 5 - Math.ceil(rating)
     for (let i = 0; i < emptyStars; i++) {
       stars.push(
-        <StarOutlineIcon key={`empty-${i}`} className="w-4 h-4 text-neutral-300" />
+        <StarOutlineIcon key={`empty-${i}`} className="w-4 h-4 text-neutral-300" aria-hidden="true" />
       )
     }
     
@@ -61,13 +61,16 @@ function ProductCard({ product }) {
   }
 
   return (
-    <Card ref={cardRef} className="h-full flex flex-col group cursor-pointer relative">
-      <Link to={`/product/${product.id}`} className="flex-grow flex flex-col">
+    <article className="h-full flex flex-col group cursor-pointer relative">
+      <Card ref={cardRef} className="h-full flex flex-col">
+      <Link to={`/product/${product.id}`} className="flex-grow flex flex-col" aria-label={`Ver detalles de ${product.title}`}>
         <div className="aspect-square w-full overflow-hidden rounded-lg bg-neutral-100 mb-4">
           <LazyImage
             src={product.image}
             alt={product.title}
             className="w-full h-full object-contain group-hover:scale-105 transition-transform duration-300"
+            width={400}
+            height={400}
           />
         </div>
         
@@ -76,7 +79,7 @@ function ProductCard({ product }) {
             {product.title}
           </h3>
           
-          <div className="flex items-center gap-1 mb-2">
+          <div className="flex items-center gap-1 mb-2" role="img" aria-label={`Rating: ${product.rating?.rate || 0} de 5 estrellas`}>
             {renderStars(product.rating?.rate || 0)}
             <span className="text-sm text-neutral-600 ml-1">
               ({product.rating?.count || 0})
@@ -99,16 +102,18 @@ function ProductCard({ product }) {
       <button
         ref={buttonRef}
         onClick={handleAddToCart}
+        aria-label={inCart ? `${product.title} ya está en el carrito` : `Agregar ${product.title} al carrito`}
         className={`mt-4 w-full py-2 px-4 rounded-lg font-medium transition-all duration-200 flex items-center justify-center gap-2 ${
           inCart
             ? 'bg-green-100 text-green-700 hover:bg-green-200'
             : 'bg-primary-600 text-white hover:bg-primary-700'
         }`}
       >
-        <ShoppingCartIcon className="w-5 h-5" />
+        <ShoppingCartIcon className="w-5 h-5" aria-hidden="true" />
         {inCart ? 'En el carrito' : 'Agregar al carrito'}
       </button>
-    </Card>
+      </Card>
+    </article>
   )
 }
 

@@ -6,6 +6,7 @@ import SearchBar from '../components/filters/SearchBar'
 import FilterBar from '../components/filters/FilterBar'
 import Loading from '../components/common/Loading'
 import { filterProducts, getPriceRange } from '../utils/filters'
+import { MetaTags } from '../components/SEO/MetaTags'
 
 function Products() {
   const { products, categories, loading, error } = useProducts()
@@ -86,7 +87,12 @@ function Products() {
   }
 
   return (
-    <div className="container-custom section-padding">
+    <>
+      <MetaTags
+        title="Catálogo de Productos"
+        description="Explora nuestro catálogo completo de productos. Encuentra lo que buscas con nuestros filtros avanzados."
+      />
+      <div className="container-custom section-padding">
       <div className="mb-8">
         <h1 className="text-3xl md:text-4xl font-bold text-neutral-900 mb-2">
           Productos
@@ -129,6 +135,7 @@ function Products() {
               inStock: null
             })}
             className="btn btn-outline"
+            aria-label="Limpiar todos los filtros"
           >
             Limpiar filtros
           </button>
@@ -137,6 +144,7 @@ function Products() {
         <ProductList products={filteredProducts} />
       )}
     </div>
+    </>
   )
 }
 

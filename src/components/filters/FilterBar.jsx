@@ -55,11 +55,13 @@ function FilterBar({ categories, onFilterChange, filters, priceRange }) {
         <button
           onClick={() => setIsOpen(!isOpen)}
           className="flex items-center gap-2 text-neutral-700 hover:text-primary-600 transition-colors font-medium"
+          aria-label="Mostrar filtros"
+          aria-expanded={isOpen}
         >
-          <FunnelIcon className="w-5 h-5" />
+          <FunnelIcon className="w-5 h-5" aria-hidden="true" />
           Filtros
           {hasActiveFilters && (
-            <span className="bg-primary-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center">
+            <span className="bg-primary-600 text-white text-xs font-bold rounded-full w-5 h-5 flex items-center justify-center" aria-label="Filtros activos">
               !
             </span>
           )}
@@ -69,6 +71,7 @@ function FilterBar({ categories, onFilterChange, filters, priceRange }) {
           <button
             onClick={clearFilters}
             className="text-sm text-primary-600 hover:text-primary-700 font-medium"
+            aria-label="Limpiar todos los filtros"
           >
             Limpiar filtros
           </button>
@@ -139,13 +142,15 @@ function FilterBar({ categories, onFilterChange, filters, priceRange }) {
                 <button
                   key={rating}
                   onClick={() => handleRatingChange(rating)}
+                  aria-label={`Filtrar por valoración mínima de ${rating} estrellas`}
+                  aria-pressed={filters.minRating === rating}
                   className={`flex items-center gap-1 px-3 py-2 rounded-lg border-2 transition-colors ${
                     filters.minRating === rating
                       ? 'border-primary-600 bg-primary-50 text-primary-700'
                       : 'border-neutral-200 hover:border-primary-300'
                   }`}
                 >
-                  <StarIcon className="w-4 h-4" />
+                  <StarIcon className="w-4 h-4" aria-hidden="true" />
                   <span className="text-sm font-medium">{rating}+</span>
                 </button>
               ))}
@@ -158,6 +163,8 @@ function FilterBar({ categories, onFilterChange, filters, priceRange }) {
             </label>
             <button
               onClick={() => handleStockChange(true)}
+              aria-label="Filtrar productos en stock"
+              aria-pressed={filters.inStock === true}
               className={`px-4 py-2 rounded-lg border-2 transition-colors ${
                 filters.inStock === true
                   ? 'border-primary-600 bg-primary-50 text-primary-700'
