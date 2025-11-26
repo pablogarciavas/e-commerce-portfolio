@@ -1,7 +1,40 @@
-import { Fragment } from 'react'
+import { useEffect, useRef } from 'react'
+import { gsap } from 'gsap'
 import { XMarkIcon } from '@heroicons/react/24/outline'
 
 function Modal({ isOpen, onClose, title, children, size = 'md' }) {
+  const overlayRef = useRef(null)
+  const modalRef = useRef(null)
+
+  useEffect(() => {
+    if (!isOpen) return
+
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+    if (prefersReducedMotion) {
+      gsap.set([overlayRef.current, modalRef.current], { opacity: 1, scale: 1 })
+      return
+    }
+
+    const tl = gsap.timeline()
+
+    tl.fromTo(
+      overlayRef.current,
+      { opacity: 0 },
+      { opacity: 1, duration: 0.2, ease: 'power2.out' }
+    )
+    .fromTo(
+      modalRef.current,
+      { opacity: 0, scale: 0.9, y: 20 },
+      { opacity: 1, scale: 1, y: 0, duration: 0.3, ease: 'back.out(1.7)' },
+      '-=0.1'
+    )
+
+    return () => {
+      tl.kill()
+    }
+  }, [isOpen])
+
   if (!isOpen) return null
   
   const sizes = {
@@ -16,10 +49,11 @@ function Modal({ isOpen, onClose, title, children, size = 'md' }) {
     <div className="fixed inset-0 z-50 overflow-y-auto">
       <div className="flex min-h-screen items-center justify-center p-4">
         <div 
-          className="fixed inset-0 bg-black bg-opacity-50 transition-opacity"
+          ref={overlayRef}
+          className="fixed inset-0 bg-black bg-opacity-50"
           onClick={onClose}
         />
-        <div className={`relative bg-white rounded-xl shadow-large ${sizes[size]} w-full animate-scale-in`}>
+        <div ref={modalRef} className={`relative bg-white rounded-xl shadow-large ${sizes[size]} w-full`}>
           {title && (
             <div className="flex items-center justify-between p-6 border-b border-neutral-200">
               <h3 className="text-xl font-semibold text-neutral-900">{title}</h3>

@@ -1,4 +1,6 @@
+import { useEffect, useRef } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
+import { gsap } from 'gsap'
 import { getFromStorage } from '../utils/storage'
 import { formatPrice, formatDateShort } from '../utils/formatters'
 import Card from '../components/common/Card'
@@ -10,6 +12,45 @@ function OrderConfirmation() {
   const navigate = useNavigate()
   const orders = getFromStorage('orders', [])
   const order = orders.find(o => o.id === id)
+  const iconRef = useRef(null)
+  const contentRef = useRef(null)
+
+  useEffect(() => {
+    if (!order) return
+
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+    if (!prefersReducedMotion) {
+      const tl = gsap.timeline()
+
+      if (iconRef.current) {
+        tl.fromTo(
+          iconRef.current,
+          { scale: 0, rotation: -180 },
+          {
+            scale: 1,
+            rotation: 0,
+            duration: 0.6,
+            ease: 'back.out(1.7)'
+          }
+        )
+      }
+
+      if (contentRef.current) {
+        tl.fromTo(
+          contentRef.current,
+          { opacity: 0, y: 20 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.5,
+            ease: 'power2.out'
+          },
+          '-=0.3'
+        )
+      }
+    }
+  }, [order])
 
   if (!order) {
     return (
@@ -33,7 +74,7 @@ function OrderConfirmation() {
     <div className="container-custom section-padding">
       <div className="max-w-3xl mx-auto">
         <div className="text-center mb-8">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-4">
+          <div ref={iconRef} className="inline-flex items-center justify-center w-16 h-16 bg-green-100 rounded-full mb-4">
             <CheckCircleIcon className="w-10 h-10 text-green-600" />
           </div>
           <h1 className="text-3xl md:text-4xl font-bold text-neutral-900 mb-2">
@@ -44,7 +85,7 @@ function OrderConfirmation() {
           </p>
         </div>
 
-        <Card className="mb-6">
+        <Card ref={contentRef} className="mb-6">
           <div className="flex items-center justify-between mb-6">
             <div>
               <h2 className="text-xl font-semibold text-neutral-900 mb-1">

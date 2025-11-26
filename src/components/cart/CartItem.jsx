@@ -1,22 +1,60 @@
+import { useEffect, useRef } from 'react'
+import { gsap } from 'gsap'
 import { useCart } from '../../context/CartContext'
 import { formatPrice } from '../../utils/formatters'
 import { TrashIcon, PlusIcon, MinusIcon } from '@heroicons/react/24/outline'
 
 function CartItem({ item }) {
   const { updateQuantity, removeFromCart } = useCart()
+  const itemRef = useRef(null)
+
+  useEffect(() => {
+    if (itemRef.current) {
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      
+      if (!prefersReducedMotion) {
+        gsap.fromTo(
+          itemRef.current,
+          { opacity: 0, x: -20 },
+          {
+            opacity: 1,
+            x: 0,
+            duration: 0.3,
+            ease: 'power2.out'
+          }
+        )
+      }
+    }
+  }, [])
 
   const handleQuantityChange = (newQuantity) => {
     updateQuantity(item.id, newQuantity)
   }
 
   const handleRemove = () => {
-    removeFromCart(item.id)
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+    
+    if (!prefersReducedMotion && itemRef.current) {
+      gsap.to(itemRef.current, {
+        opacity: 0,
+        x: 20,
+        height: 0,
+        marginBottom: 0,
+        duration: 0.3,
+        ease: 'power2.in',
+        onComplete: () => {
+          removeFromCart(item.id)
+        }
+      })
+    } else {
+      removeFromCart(item.id)
+    }
   }
 
   const subtotal = item.price * item.quantity
 
   return (
-    <div className="flex items-center gap-4 p-4 bg-white rounded-lg border border-neutral-200">
+    <div ref={itemRef} className="flex items-center gap-4 p-4 bg-white rounded-lg border border-neutral-200">
       <div className="w-20 h-20 flex-shrink-0 overflow-hidden rounded-lg bg-neutral-100">
         <img
           src={item.image}

@@ -1,6 +1,8 @@
+import { useLocation } from 'react-router-dom'
 import Header from './Header'
 import Footer from './Footer'
 import Navbar from './Navbar'
+import PageTransition from '../PageTransition'
 
 function Layout({ children }) {
   return (
@@ -8,7 +10,9 @@ function Layout({ children }) {
       <Header />
       <Navbar />
       <main className="flex-grow">
-        {children}
+        <PageTransition>
+          {children}
+        </PageTransition>
       </main>
       <Footer />
     </div>
