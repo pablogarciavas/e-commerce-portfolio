@@ -1,7 +1,6 @@
 import { useLocation } from 'react-router-dom'
 import Header from './Header'
 import Footer from './Footer'
-import Navbar from './Navbar'
 import PageTransition from '../PageTransition'
 import { WebsiteStructuredData } from '../SEO/StructuredData'
 
@@ -16,7 +15,6 @@ function Layout({ children }) {
         Saltar al contenido principal
       </a>
       <Header />
-      <Navbar />
       <main id="main-content" className="flex-grow" role="main">
         <PageTransition>
           {children}
