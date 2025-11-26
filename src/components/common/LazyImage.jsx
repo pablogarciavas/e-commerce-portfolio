@@ -1,12 +1,17 @@
 import { useState, useRef, useEffect } from 'react'
 
-function LazyImage({ src, alt, className = '', ...props }) {
+function LazyImage({ src, alt, className = '', width, height, priority = false, ...props }) {
   const [isLoaded, setIsLoaded] = useState(false)
   const [isInView, setIsInView] = useState(false)
   const imgRef = useRef(null)
 
   useEffect(() => {
     if (!imgRef.current) return
+
+    if (priority) {
+      setIsInView(true)
+      return
+    }
 
     const observer = new IntersectionObserver(
       (entries) => {
@@ -27,7 +32,7 @@ function LazyImage({ src, alt, className = '', ...props }) {
     return () => {
       observer.disconnect()
     }
-  }, [])
+  }, [priority])
 
   return (
     <div ref={imgRef} className={`relative overflow-hidden ${className}`}>
@@ -38,9 +43,13 @@ function LazyImage({ src, alt, className = '', ...props }) {
         <img
           src={src}
           alt={alt}
+          width={width}
+          height={height}
           className={`transition-opacity duration-300 ${isLoaded ? 'opacity-100' : 'opacity-0'} ${className}`}
           onLoad={() => setIsLoaded(true)}
-          loading="lazy"
+          loading={priority ? 'eager' : 'lazy'}
+          decoding="async"
+          fetchPriority={priority ? 'high' : 'auto'}
           {...props}
         />
       )}

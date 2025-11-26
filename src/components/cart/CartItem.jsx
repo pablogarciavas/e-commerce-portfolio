@@ -61,6 +61,8 @@ function CartItem({ item }) {
           src={item.image}
           alt={item.title}
           className="w-full h-full object-contain"
+          width={80}
+          height={80}
         />
       </div>
 
@@ -80,9 +82,9 @@ function CartItem({ item }) {
             className="p-2 hover:bg-neutral-100 transition-colors"
             aria-label="Decrease quantity"
           >
-            <MinusIcon className="w-4 h-4" />
+            <MinusIcon className="w-4 h-4" aria-hidden="true" />
           </button>
-          <span className="px-3 py-1 min-w-[3rem] text-center font-medium">
+          <span className="px-3 py-1 min-w-[3rem] text-center font-medium" aria-label={`Quantity: ${item.quantity}`}>
             {item.quantity}
           </span>
           <button
@@ -90,7 +92,7 @@ function CartItem({ item }) {
             className="p-2 hover:bg-neutral-100 transition-colors"
             aria-label="Increase quantity"
           >
-            <PlusIcon className="w-4 h-4" />
+            <PlusIcon className="w-4 h-4" aria-hidden="true" />
           </button>
         </div>
 
@@ -103,9 +105,9 @@ function CartItem({ item }) {
         <button
           onClick={handleRemove}
           className="p-2 text-red-600 hover:bg-red-50 rounded-lg transition-colors"
-          aria-label="Remove item"
+          aria-label={`Remove ${item.title} from cart`}
         >
-          <TrashIcon className="w-5 h-5" />
+          <TrashIcon className="w-5 h-5" aria-hidden="true" />
         </button>
       </div>
     </div>

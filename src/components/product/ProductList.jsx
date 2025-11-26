@@ -8,7 +8,7 @@ function ProductList({ products }) {
   useEffect(() => {
     if (!products || products.length === 0) return
 
-    const cards = containerRef.current?.querySelectorAll('.product-card')
+    const cards = containerRef.current?.querySelectorAll('article')
     if (!cards || cards.length === 0) return
 
     const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
@@ -47,9 +47,7 @@ function ProductList({ products }) {
   return (
     <div ref={containerRef} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
       {products.map((product) => (
-        <div key={product.id} className="product-card">
-          <ProductCard product={product} />
-        </div>
+        <ProductCard key={product.id} product={product} />
       ))}
     </div>
   )

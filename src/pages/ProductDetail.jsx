@@ -9,6 +9,8 @@ import Button from '../components/common/Button'
 import Loading from '../components/common/Loading'
 import Card from '../components/common/Card'
 import LazyImage from '../components/common/LazyImage'
+import { MetaTags } from '../components/SEO/MetaTags'
+import { ProductStructuredData } from '../components/SEO/StructuredData'
 
 function ProductDetail() {
   const { id } = useParams()
@@ -44,7 +46,7 @@ function ProductDetail() {
           <p className="text-neutral-600 mb-6">
             El producto que buscas no existe o ha sido eliminado.
           </p>
-          <Button onClick={() => navigate('/products')}>
+          <Button onClick={() => navigate('/products')} aria-label="Volver a la página de productos">
             Volver a productos
           </Button>
         </div>
@@ -59,20 +61,20 @@ function ProductDetail() {
     
     for (let i = 0; i < fullStars; i++) {
       stars.push(
-        <StarIcon key={i} className="w-5 h-5 text-yellow-400" />
+        <StarIcon key={i} className="w-5 h-5 text-yellow-400" aria-hidden="true" />
       )
     }
     
     if (hasHalfStar) {
       stars.push(
-        <StarIcon key="half" className="w-5 h-5 text-yellow-400" />
+        <StarIcon key="half" className="w-5 h-5 text-yellow-400" aria-hidden="true" />
       )
     }
     
     const emptyStars = 5 - Math.ceil(rating)
     for (let i = 0; i < emptyStars; i++) {
       stars.push(
-        <StarOutlineIcon key={`empty-${i}`} className="w-5 h-5 text-neutral-300" />
+        <StarOutlineIcon key={`empty-${i}`} className="w-5 h-5 text-neutral-300" aria-hidden="true" />
       )
     }
     
@@ -80,17 +82,30 @@ function ProductDetail() {
   }
 
   return (
-    <div className="container-custom section-padding">
+    <>
+      {product && (
+        <>
+          <MetaTags
+            title={product.title}
+            description={product.description}
+            image={product.image}
+            type="product"
+          />
+          <ProductStructuredData product={product} />
+        </>
+      )}
+      <div className="container-custom section-padding">
       <div className="mb-6">
         <Link
           to="/products"
           className="inline-flex items-center text-neutral-600 hover:text-primary-600 transition-colors mb-4"
+          aria-label="Volver a la página de productos"
         >
-          <ArrowLeftIcon className="w-5 h-5 mr-2" />
+          <ArrowLeftIcon className="w-5 h-5 mr-2" aria-hidden="true" />
           Volver a productos
         </Link>
         
-        <nav className="flex items-center space-x-2 text-sm text-neutral-600">
+        <nav className="flex items-center space-x-2 text-sm text-neutral-600" aria-label="Breadcrumb">
           <Link to="/" className="hover:text-primary-600 transition-colors">
             Inicio
           </Link>
@@ -117,6 +132,9 @@ function ProductDetail() {
             src={product.image}
             alt={product.title}
             className="w-full h-full object-contain"
+            priority={true}
+            width={800}
+            height={800}
           />
         </div>
 
@@ -132,7 +150,7 @@ function ProductDetail() {
               {product.title}
             </h1>
 
-            <div className="flex items-center gap-2 mb-4">
+            <div className="flex items-center gap-2 mb-4" role="img" aria-label={`Rating: ${product.rating?.rate || 0} de 5 estrellas, ${product.rating?.count || 0} reseñas`}>
               <div className="flex items-center">
                 {renderStars(product.rating?.rate || 0)}
               </div>
@@ -171,6 +189,7 @@ function ProductDetail() {
               size="lg"
               fullWidth
               onClick={handleAddToCart}
+              aria-label={inCart ? `Agregar otra unidad de ${product.title} al carrito` : `Agregar ${product.title} al carrito`}
             >
               {inCart ? 'Agregar otra unidad' : 'Agregar al carrito'}
             </Button>
@@ -180,6 +199,7 @@ function ProductDetail() {
               size="lg"
               fullWidth
               onClick={() => navigate('/cart')}
+              aria-label="Ir al carrito de compras"
             >
               Ver carrito
             </Button>
@@ -187,6 +207,7 @@ function ProductDetail() {
         </div>
       </div>
     </div>
+    </>
   )
 }
 

@@ -2,6 +2,7 @@ import { useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { gsap } from 'gsap'
 import Button from '../components/common/Button'
+import { MetaTags } from '../components/SEO/MetaTags'
 
 function Home() {
   const titleRef = useRef(null)
@@ -52,7 +53,12 @@ function Home() {
   }, [])
 
   return (
-    <div className="container-custom section-padding">
+    <>
+      <MetaTags
+        title="Inicio"
+        description="Bienvenido a nuestra tienda online. Descubre nuestra amplia selección de productos de calidad al mejor precio."
+      />
+      <div className="container-custom section-padding">
       <div className="text-center max-w-3xl mx-auto">
         <h1 ref={titleRef} className="text-4xl md:text-5xl lg:text-6xl font-bold text-neutral-900 mb-6">
           Bienvenido a nuestra tienda
@@ -74,6 +80,7 @@ function Home() {
         </div>
       </div>
     </div>
+    </>
   )
 }
 

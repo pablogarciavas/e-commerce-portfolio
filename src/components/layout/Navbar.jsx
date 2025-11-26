@@ -30,11 +30,12 @@ function Navbar() {
         onClick={() => setIsOpen(!isOpen)}
         className="md:hidden text-neutral-700 hover:text-primary-600 transition-colors"
         aria-label="Toggle menu"
+        aria-expanded={isOpen}
       >
         {isOpen ? (
-          <XMarkIcon className="w-6 h-6" />
+          <XMarkIcon className="w-6 h-6" aria-hidden="true" />
         ) : (
-          <Bars3Icon className="w-6 h-6" />
+          <Bars3Icon className="w-6 h-6" aria-hidden="true" />
         )}
       </button>
       
@@ -44,8 +45,8 @@ function Navbar() {
             <div className="p-6">
               <div className="flex items-center justify-between mb-8">
                 <span className="text-xl font-bold text-neutral-900">Menú</span>
-                <button onClick={() => setIsOpen(false)}>
-                  <XMarkIcon className="w-6 h-6 text-neutral-700" />
+                <button onClick={() => setIsOpen(false)} aria-label="Cerrar menú">
+                  <XMarkIcon className="w-6 h-6 text-neutral-700" aria-hidden="true" />
                 </button>
               </div>
               
@@ -85,7 +86,7 @@ function Navbar() {
                   {isAuthenticated ? (
                     <>
                       <div className="flex items-center space-x-2 py-2 px-4 mb-4">
-                        <UserCircleIcon className="w-6 h-6 text-neutral-600" />
+                        <UserCircleIcon className="w-6 h-6 text-neutral-600" aria-hidden="true" />
                         <span className="text-neutral-700 font-medium">{user?.name}</span>
                       </div>
                       {user?.role === 'admin' && (
