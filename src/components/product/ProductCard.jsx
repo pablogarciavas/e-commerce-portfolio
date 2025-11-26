@@ -1,4 +1,6 @@
+import { useRef } from 'react'
 import { Link } from 'react-router-dom'
+import { gsap } from 'gsap'
 import { useCart } from '../../context/CartContext'
 import Card from '../common/Card'
 import { formatPrice } from '../../utils/formatters'
@@ -9,10 +11,25 @@ import { ShoppingCartIcon } from '@heroicons/react/24/outline'
 function ProductCard({ product }) {
   const { addToCart, isInCart } = useCart()
   const inCart = isInCart(product.id)
+  const buttonRef = useRef(null)
+  const cardRef = useRef(null)
 
   const handleAddToCart = (e) => {
     e.preventDefault()
     e.stopPropagation()
+
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+    if (!prefersReducedMotion && buttonRef.current) {
+      gsap.to(buttonRef.current, {
+        scale: 0.95,
+        duration: 0.1,
+        yoyo: true,
+        repeat: 1,
+        ease: 'power2.inOut'
+      })
+    }
+
     addToCart(product, 1)
   }
   const renderStars = (rating) => {
@@ -43,7 +60,7 @@ function ProductCard({ product }) {
   }
 
   return (
-    <Card className="h-full flex flex-col group cursor-pointer relative">
+    <Card ref={cardRef} className="h-full flex flex-col group cursor-pointer relative">
       <Link to={`/product/${product.id}`} className="flex-grow flex flex-col">
         <div className="aspect-square w-full overflow-hidden rounded-lg bg-neutral-100 mb-4">
           <img
@@ -79,6 +96,7 @@ function ProductCard({ product }) {
       </Link>
       
       <button
+        ref={buttonRef}
         onClick={handleAddToCart}
         className={`mt-4 w-full py-2 px-4 rounded-lg font-medium transition-all duration-200 flex items-center justify-center gap-2 ${
           inCart

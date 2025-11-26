@@ -1,4 +1,5 @@
-import { useState, useMemo } from 'react'
+import { useState, useMemo, useEffect, useRef } from 'react'
+import { gsap } from 'gsap'
 import { useProducts } from '../context/ProductContext'
 import ProductList from '../components/product/ProductList'
 import SearchBar from '../components/filters/SearchBar'
@@ -16,12 +17,38 @@ function Products() {
     minRating: null,
     inStock: null
   })
+  const filterBarRef = useRef(null)
+  const searchBarRef = useRef(null)
 
   const priceRange = useMemo(() => getPriceRange(products), [products])
 
   const filteredProducts = useMemo(() => {
     return filterProducts(products, filters)
   }, [products, filters])
+
+  useEffect(() => {
+    if (loading) return
+
+    const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+
+    if (!prefersReducedMotion) {
+      const elements = [filterBarRef.current, searchBarRef.current].filter(Boolean)
+      
+      if (elements.length > 0) {
+        gsap.fromTo(
+          elements,
+          { opacity: 0, y: -10 },
+          {
+            opacity: 1,
+            y: 0,
+            duration: 0.4,
+            stagger: 0.1,
+            ease: 'power2.out'
+          }
+        )
+      }
+    }
+  }, [loading])
 
   const handleSearch = (searchTerm) => {
     setFilters(prev => ({ ...prev, search: searchTerm }))
@@ -74,16 +101,18 @@ function Products() {
         </p>
       </div>
 
-      <div className="mb-6">
+      <div ref={searchBarRef} className="mb-6">
         <SearchBar onSearch={handleSearch} />
       </div>
 
-      <FilterBar
-        categories={categories}
-        onFilterChange={handleFilterChange}
-        filters={filters}
-        priceRange={priceRange}
-      />
+      <div ref={filterBarRef}>
+        <FilterBar
+          categories={categories}
+          onFilterChange={handleFilterChange}
+          filters={filters}
+          priceRange={priceRange}
+        />
+      </div>
       
       {filteredProducts.length === 0 ? (
         <div className="text-center py-12">

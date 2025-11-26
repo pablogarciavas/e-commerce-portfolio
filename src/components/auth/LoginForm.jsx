@@ -1,4 +1,5 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
+import { gsap } from 'gsap'
 import { useAuth } from '../../context/AuthContext'
 import { useNavigate, Link } from 'react-router-dom'
 import Input from '../common/Input'
@@ -9,9 +10,29 @@ function LoginForm() {
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
   const [isLoading, setIsLoading] = useState(false)
+  const errorRef = useRef(null)
+  const formRef = useRef(null)
   
   const { login } = useAuth()
   const navigate = useNavigate()
+
+  useEffect(() => {
+    if (error && errorRef.current) {
+      const prefersReducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches
+      
+      if (!prefersReducedMotion) {
+        gsap.fromTo(
+          errorRef.current,
+          { x: -10 },
+          {
+            x: [10, -10, 10, -10, 0],
+            duration: 0.5,
+            ease: 'power2.inOut'
+          }
+        )
+      }
+    }
+  }, [error])
 
   const handleSubmit = async (e) => {
     e.preventDefault()
@@ -30,9 +51,9 @@ function LoginForm() {
   }
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
+    <form ref={formRef} onSubmit={handleSubmit} className="space-y-6">
       {error && (
-        <div className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
+        <div ref={errorRef} className="bg-red-50 border border-red-200 text-red-700 px-4 py-3 rounded-lg">
           {error}
         </div>
       )}
